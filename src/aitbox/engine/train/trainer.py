@@ -8,7 +8,7 @@ Created     : 2026-01-02
 Description :
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
@@ -44,14 +44,14 @@ class ResultData:
     """ """
 
     loader: Any = None
-    prediction: list = list()
+    prediction: list = field(default_factory=list)
     total_loss: Any = 0
     prediction_saved: bool = False
 
     acc_batch_idx: int = 0
-    train_loss_list: list = list()
-    val_loss_list: list = list()
-    test_loss_list: list = list()
+    train_loss_list: list = field(default_factory=list)
+    val_loss_list: list = field(default_factory=list)
+    test_loss_list: list = field(default_factory=list)
 
     def init(self, loader):
         """ """
@@ -109,7 +109,7 @@ class Trainer(CallbackMixin):
         self.epochs = epochs
         self.init_callbacks(callbacks)
 
-        self.grad_accumalte_step = 1
+        self.grad_accumulate_step = 1
         self.fit_stop_signal = False
         self.epoch = 0
 
@@ -131,7 +131,7 @@ class Trainer(CallbackMixin):
         val_interval=1,
         test_interval=1,
         num_batches_per_epoch=None,
-        grad_accumalte_step=1,
+        grad_accumulate_step=1,
         val_num_batches_per_epoch=None,
         test_num_batches_per_epoch=None,
     ):
@@ -139,7 +139,7 @@ class Trainer(CallbackMixin):
         self("initialize")
         self.set_attr("epochs", epochs)
         self.set_attr("device", device)
-        self.set_attr("grad_accumalte_step", grad_accumalte_step)
+        self.set_attr("grad_accumulate_step", grad_accumulate_step)
         self.set_loader_info(
             [num_batches_per_epoch, val_num_batches_per_epoch, test_num_batches_per_epoch],
             [train_loader, val_loader, test_loader],
@@ -151,15 +151,15 @@ class Trainer(CallbackMixin):
             self.epoch = epoch
             self("before_epoch")
             self.train_epoch()
-            if self.val_loader is not None and epoch % val_interval == 0:
+            if self.val_loader_info.loader is not None and epoch % val_interval == 0:
                 self.validate()
-            if self.test_loader is not None and epoch % test_interval == 0:
+            if self.test_loader_info.loader is not None and epoch % test_interval == 0:
                 self.test()
             if self.fit_stop_signal:
                 break
             self("after_epoch")
         self("after_fit")
-        if self.test_loader is not None:
+        if self.test_loader_info.loader is not None:
             self.test()
         self("finalize")
 
