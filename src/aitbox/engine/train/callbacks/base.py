@@ -13,7 +13,7 @@ from bisect import bisect_right
 from typing import List
 
 
-class CallBack(ABC):
+class Callback(ABC):
     """ """
 
     caller: "CallbackMixin" = None
@@ -22,12 +22,12 @@ class CallBack(ABC):
     @classmethod
     def set_caller(cls, caller: "CallbackMixin"):
         """ """
-        cls.set_caller(caller)
+        cls.caller = caller
 
     @classmethod
     def set_weight(cls, weight: float):
         """ """
-        cls.set_weight(weight)
+        cls.weight = weight
 
     @property
     def name(self):
@@ -35,11 +35,11 @@ class CallBack(ABC):
         return self.__class__.name
 
 
-class Callbacks(ABC):
+class CallbacksContainer(ABC):
     """ """
 
     @abstractmethod
-    def add(self, callback: CallBack):
+    def add(self, callback: Callback):
         """ """
         ...
 
@@ -52,17 +52,22 @@ class Callbacks(ABC):
     def get(self, callback_cls_str):
         """ """
         ...
+        
+    @abstractmethod
+    def replace(self, callback_cls_str, new_callback):
+        """ """
+        ...
 
 
-class CallbacksList(Callbacks):
+class CallbacksList(CallbacksContainer):
     """ """
 
     def __init__(self):
         """ """
         super().__init__()
-        self._callbacks: List[CallBack] = []
+        self._callbacks: List[Callback] = []
 
-    def add(self, callback: CallBack) -> None:
+    def add(self, callback: Callback) -> None:
         """ """
         weight = getattr(callback, "weight", 0)
         weights = [-getattr(cb, "weight", 0) for cb in self._callbacks]
@@ -76,12 +81,19 @@ class CallbacksList(Callbacks):
                 self._callbacks.pop(i)
                 break
 
-    def get(self, callback_cls_str) -> CallBack | None:
+    def get(self, callback_cls_str) -> Callback | None:
         """ """
         for callback in self._callbacks:
             if callback.name == callback_cls_str:
                 return callback
         return None
+    
+    def replace(self, callback_cls_str, new_callback: Callback) -> None:
+        """ """
+        for index, callback in enumerate(self._callbacks):
+            if callback.name == callback_cls_str:
+                new_callback.set_caller(callback.caller)
+                self._callbacks[index] = new_callback
 
     def __iter__(self):
         """ """
@@ -100,9 +112,9 @@ class CallbackMixin:
         super().__init__(*args, **kwargs)
         self.callbacks = CallbacksList()
 
-    def init_callbacks(self, callbacks: CallBack | List[CallBack]):
+    def init_callbacks(self, callbacks: Callback | List[Callback]):
         """ """
-        if isinstance(callbacks, CallBack):
+        if isinstance(callbacks, Callback):
             callbacks = [callbacks]
         for callback in callbacks:
             callback.set_caller(self)
@@ -112,7 +124,7 @@ class CallbackMixin:
         """ """
         self.callbacks.remove(callback_cls_str)
 
-    def add_callback(self, callback: CallBack):
+    def add_callback(self, callback: Callback):
         """ """
         callback.set_caller(self)
         self.callbacks.add(callback)
@@ -120,6 +132,10 @@ class CallbackMixin:
     def get_callback(self, callback_cls_str):
         """ """
         return self.callbacks.get(callback_cls_str)
+    
+    def replace_callback(self, callback_cls_str, new_callback):
+        """ """
+        return self.callbacks.replace(callback_cls_str, new_callback)
 
     def __call__(self, name: str, *args, **kwargs):
         """ """

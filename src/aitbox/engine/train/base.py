@@ -40,7 +40,7 @@ class TestModelBase(ABC, nn.Module):
         ...
 
 
-class TrainModelBase(ABC, TestModelBase):
+class TrainModelBase(TestModelBase):
     """ """
 
     def __init__(self, model: nn.Module):

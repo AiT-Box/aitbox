@@ -16,6 +16,8 @@ import torch
 
 from aitbox.engine.train.base import StepOutput, TrainModelBase
 from aitbox.engine.train.callbacks.base import CallbackMixin
+from aitbox.engine.train.callbacks.loss import LossCallback
+from aitbox.engine.train.callbacks.optimizer import OptimizerCallback
 from aitbox.engine.train.callbacks.wrapper import InfiniteLoader, ddp_master_only
 
 
@@ -107,7 +109,9 @@ class Trainer(CallbackMixin):
         self.model = model
         self.device = device
         self.epochs = epochs
-        self.init_callbacks(callbacks)
+        self.init_callbacks([LossCallback(), OptimizerCallback()])
+        if callbacks is not None:
+            self.init_callbacks(callbacks)
 
         self.grad_accumulate_step = 1
         self.fit_stop_signal = False
@@ -119,12 +123,13 @@ class Trainer(CallbackMixin):
 
         self.result_data = ResultData()
         self.batch_result_data = BatchResultData()
-        self.optimizer, self.scheduler = None, None
+        self.optimizer: torch.optim.Optimizer | None = None
+        self.scheduler: torch.optim.lr_scheduler._LRScheduler | None = None
 
     def fit(
         self,
         train_loader,
-        val_loader,
+        val_loader=None,
         test_loader=None,
         epochs=None,
         device=None,
@@ -178,9 +183,10 @@ class Trainer(CallbackMixin):
             self("after_batch_train_step")
             self.batch_result_data.set_batch_output(output)
             self.result_data.append(output)
-            if output.loss.isnan().items():
+            if torch.isnan(output.loss).any():
                 raise ValueError(f"Epoch:{self.epoch} Batch:{batch_idx} train loss is nan!")
             self("backward")
+            self("after_batch_train_backward")
             self("optimizer")
             self("after_batch_train")
         self.result_data.final("train")
@@ -232,8 +238,9 @@ class Trainer(CallbackMixin):
         for name, loader, num_batches_per_epoch in zip(
             ["train", "val", "test"], loader_list, num_batches_per_epoch_list
         ):
-            loader = InfiniteLoader(loader)
-            getattr(self, f"{name}_loader_info").set_info(loader, num_batches_per_epoch)
+            if loader is not None:
+                loader = InfiniteLoader(loader)
+                getattr(self, f"{name}_loader_info").set_info(loader, num_batches_per_epoch)
 
     def set_model(self):
         """ """
