@@ -81,7 +81,7 @@ class LoaderInfo:
     """ """
 
     loader: Any = None
-    num_batches_per_epoch: int = 0
+    num_batches_per_epoch: int | None = None
     
     def set_info(self, loader, num_batches_per_epoch):
         """ """

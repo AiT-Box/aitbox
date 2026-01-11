@@ -11,7 +11,10 @@ Description :
 import functools
 
 import torch.distributed as dist
+from tqdm import tqdm
 from torch.utils.data import DataLoader, DistributedSampler
+
+from aitbox.utils.log import Log
 
 
 class InfiniteLoader:
@@ -69,3 +72,20 @@ def ddp_master_only(func):
         return None
 
     return wrapper
+
+
+def tqdm_log_wrapper(log_cls: Log):
+    """ """
+    
+    def _tqdm_sink(msg: str):
+        """ """
+        tqdm.write(msg.rstrip("\n"))
+    
+    log_cls.logger.remove()
+    log_cls.logger.add(
+        _tqdm_sink,
+        format=log_cls.format,
+        level=log_cls.level
+
+    )
+    return log_cls

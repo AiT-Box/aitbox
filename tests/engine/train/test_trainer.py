@@ -13,6 +13,7 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 
 from aitbox.engine.train.base import StepOutput, TrainModelBase
+from aitbox.engine.train.callbacks.track import TqdmTrack
 from aitbox.engine.train.trainer import Trainer
 
 
@@ -72,8 +73,13 @@ def test_trainer():
     trainer = Trainer(
         model=train_model,
         device=torch.device("cuda"),
+        callbacks=[TqdmTrack()]
     )
     trainer.fit(
         train_loader=dataloader,
         epochs=10,
     )
+
+
+if __name__ == "__main__":
+    test_trainer()
