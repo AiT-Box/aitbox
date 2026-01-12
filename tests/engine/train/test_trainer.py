@@ -72,7 +72,7 @@ def test_trainer():
     train_model = TrainModel(model)
     trainer = Trainer(
         model=train_model,
-        device=torch.device("cuda"),
+        device=torch.device("cpu"),
         callbacks=[TqdmTrack()]
     )
     trainer.fit(
