@@ -67,3 +67,17 @@ def test_track_pl_columns():
             ),
             coord_type=CoordinateType.EUCLIDEAN,
         )
+
+
+def test_track_pd_from_dataframe():
+    """ """
+    data = pd.DataFrame(
+        {
+            "time": [0, 1, 2],
+            "x": [0.0, 1.0, 2.0],
+            "y": [0.0, 1.0, 2.0],
+            "track_id": [0, 0, 0]
+        }
+    )
+    track = Track.from_dataframe(data)
+    assert isinstance(track, TrackPd)

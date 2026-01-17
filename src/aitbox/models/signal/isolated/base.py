@@ -21,7 +21,12 @@ class IsolatedSolver(abc.ABC):
 
     @abc.abstractmethod
     def solve(
-        self, cross: Cross, indicators: Indicator | List[Indicator], *args, **kwargs
+        self,
+        cross: Cross,
+        indicators: Indicator | List[Indicator],
+        schema: SingalSchema | None = None,
+        *args,
+        **kwargs,
     ) -> SingalSchema:
         """ """
         ...
