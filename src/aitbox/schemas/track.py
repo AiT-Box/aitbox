@@ -122,7 +122,7 @@ class TrackPd(TrackBase):
     def sample_by_distance(self, distance_th, inplace=True, *args, **kwargs):
         """ """
 
-        from aitbox.preprocessing.track.pd.downsample import sample_by_distance
+        from aitbox.preprocessing.track.pd.sample import sample_by_distance
 
         data = sample_by_distance(self.data, distance_th, *args, **kwargs)
         return self._inplace(data, inplace)
