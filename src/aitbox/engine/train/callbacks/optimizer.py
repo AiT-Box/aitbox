@@ -18,13 +18,13 @@ if TYPE_CHECKING:
     from aitbox.engine.train.trainer import Trainer
 
 
-class BaseOptimzerCallback(Callback):
+class BaseOptimizerCallback(Callback):
     """ """
 
     caller: "Trainer"
 
 
-class OptimizerCallback(BaseOptimzerCallback):
+class OptimizerCallback(BaseOptimizerCallback):
     """ """
 
     def __init__(self):
