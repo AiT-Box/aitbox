@@ -127,6 +127,7 @@ class TrackPd(TrackBase):
         data = sample_by_distance(self.data, distance_th, *args, **kwargs)
         return self._inplace(data, inplace)
 
+
 @dataclass
 class TrackPl(TrackBase):
     """ """
@@ -191,7 +192,7 @@ class Track(ABC):
         backend_cls = get_track_backend()
         if coord_type is None:
             coord_type = CoordinateType.EUCLIDEAN
-        return backend_cls(data=data, coord_type=coord_type, ti, **kwargs)
+        return backend_cls(data=data, coord_type=coord_type, **kwargs)
 
     @classmethod
     def from_dataframe(cls, data, coord_type=None, **kwargs):
