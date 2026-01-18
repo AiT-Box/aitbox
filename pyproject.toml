@@ -9,3 +9,11 @@ dependencies = [
     "numpy==2.4.0",
     "torch==2.9.1",
 ]
+
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+python-source = "src" 
+module-name = "aitbox.preprocessing.track.map_match"
