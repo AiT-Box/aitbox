@@ -22,7 +22,8 @@ class CoordinateType(Enum):
 
     EUCLIDEAN = auto()
     WGS84 = auto()
-    BD09 = auto()
+    BD09LL = auto()
+    GCJ02 = auto()
 
 
 @dataclass(frozen=True)
@@ -46,12 +47,18 @@ COORDINATE_SPECS = {
         description="WGS84 geographic coordinate",
         epsg=4326,
     ),
-    CoordinateType.BD09: CoordinateSpec(
+    CoordinateType.BD09LL: CoordinateSpec(
         columns=("track_id", "lon", "lat", "time"),
         unit="degree",
-        description="Baidu BD09 coordinate",
+        description="Baidu BD09LL coordinate",
         epsg=None,
     ),
+    CoordinateType.GCJ02: CoordinateSpec(
+            columns=("track_id", "lon", "lat", "time"),
+            unit="degree",
+            description="Gaode GCJ02 coordinate",
+            epsg=None,
+        ),
 }
 
 
