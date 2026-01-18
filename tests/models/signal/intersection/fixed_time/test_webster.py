@@ -1,6 +1,6 @@
 import numpy as np
 
-from aitbox.models.signal.intersection.fixed_time.webster import Webster
+from aitbox.models.signal.isolated.cycler.webster import Webster
 
 
 def test_webster_cycle():

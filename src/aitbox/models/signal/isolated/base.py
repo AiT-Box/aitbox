@@ -13,7 +13,7 @@ from typing import List
 
 from aitbox.schemas.indicator import Indicator
 from aitbox.schemas.road_network import Cross
-from aitbox.schemas.singal import SingalSchema
+from aitbox.schemas.singal import SignalSchema
 
 
 class IsolatedSolver(abc.ABC):
@@ -24,9 +24,9 @@ class IsolatedSolver(abc.ABC):
         self,
         cross: Cross,
         indicators: Indicator | List[Indicator],
-        schema: SingalSchema | None = None,
+        schema: SignalSchema | None = None,
         *args,
         **kwargs,
-    ) -> SingalSchema:
+    ) -> SignalSchema:
         """ """
         ...
