@@ -3,7 +3,7 @@
 """
 File        : indicator
 Project     : aitbox
-Author      : gdd
+Author      : gdd, run
 Created     : 2026/1/17
 Description :
 """
@@ -24,8 +24,12 @@ class IndicatorType(str, Enum):
     THROUGHPUT = "throughput"  # 实际通行流量
 
     # Queue
-    QUEUE_LENGTH = "queue_length"  # 排队长度
+    QUEUE_LENGTH = "queue_length"  # 实时排队长度
+
     QUEUE_TIME = "queue_time"  # 排队时间
+    GREEN_END_QUEUE_LENGTH = "green_end_queue_length"  # 绿灯时间结束时刻的排队长度
+    RED_START_QUEUE_LENGTH = "red_start_queue_length"  # 红灯启亮时刻的排队长度
+
 
     # State
     SPEED = "speed"  # 速度
