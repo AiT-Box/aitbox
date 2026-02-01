@@ -30,7 +30,6 @@ class IndicatorType(str, Enum):
     GREEN_END_QUEUE_LENGTH = "green_end_queue_length"  # 绿灯时间结束时刻的排队长度
     RED_START_QUEUE_LENGTH = "red_start_queue_length"  # 红灯启亮时刻的排队长度
 
-
     # State
     SPEED = "speed"  # 速度
     DENSITY = "density"  # 密度
@@ -58,9 +57,9 @@ class IndicatorType(str, Enum):
 class Indicator:
     """ """
     type: IndicatorType
-    freq: str
-    entity: None | Lane | Branch | Cross
+    source_id: str | int | None
     value: Any
+    freq: str
     timestamp: None | str | int = None
     unit: None | str = None
 

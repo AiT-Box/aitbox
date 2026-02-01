@@ -12,3 +12,6 @@ pyo3 = { version = "0.27.2", features = ["extension-module"] }
 numpy = "0.27.1"
 petgraph = "0.8.3"
 rstar = "0.12.2"
+geo-types = "0.7"
+rayon = "1.10"
+moka = { version = "0.12", features = ["sync"] }
